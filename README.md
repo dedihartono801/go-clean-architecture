@@ -20,7 +20,7 @@ Example:
 - swagger for doc
 - middleware auth jwt
 - migration
-- unit testing
+- unit testing with mock and table test
 
 ## Run Service
 
@@ -45,6 +45,12 @@ $ make migration-down
 ```bash
 $ make migration
 #type your migration name example: create_create_table_users
+```
+
+## Create .env file
+
+```bash
+$ ./entrypoint.sh
 ```
 
 ## Generate JWT Secret
