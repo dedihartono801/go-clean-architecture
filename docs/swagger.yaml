@@ -1,0 +1,365 @@
+definitions:
+  domain.Admin:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  domain.Book:
+    properties:
+      author:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - author
+    - title
+    type: object
+  domain.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - email
+    - name
+    type: object
+  product.ProductDto:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      stock:
+        type: string
+    type: object
+info:
+  contact:
+    email: dedihartono801@mail.com
+    name: Dedi Hartono
+  description: This is an auto-generated API Docs.
+  title: API
+  version: "1.0"
+paths:
+  /admin:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Admin'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Profile Admin
+      tags:
+      - admin
+  /admin/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body raw
+        in: body
+        name: raw
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Admin'
+      summary: Create Admin
+      tags:
+      - admin
+  /admin/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body raw
+        in: body
+        name: raw
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Admin'
+      summary: Login admin
+      tags:
+      - admin
+  /books:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Book'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: List book
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body raw
+        in: body
+        name: raw
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Book'
+      security:
+      - ApiKeyAuth: []
+      summary: Create book
+      tags:
+      - books
+  /books/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Delete book
+      tags:
+      - books
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Book'
+      security:
+      - ApiKeyAuth: []
+      summary: Find book
+      tags:
+      - books
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: body raw
+        in: body
+        name: raw
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Book'
+      security:
+      - ApiKeyAuth: []
+      summary: Update book
+      tags:
+      - books
+  /product:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/product.ProductDto'
+      security:
+      - ApiKeyAuth: []
+      summary: List Film
+      tags:
+      - film
+  /users:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.User'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: List user
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body raw
+        in: body
+        name: raw
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+      security:
+      - ApiKeyAuth: []
+      summary: Create user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Delete user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+      security:
+      - ApiKeyAuth: []
+      summary: Find user
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: body raw
+        in: body
+        name: raw
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+      security:
+      - ApiKeyAuth: []
+      summary: Update user
+      tags:
+      - users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
