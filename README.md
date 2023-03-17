@@ -22,6 +22,12 @@ Example:
 - migration
 - unit testing with mock and table test
 
+## Install Swagger
+go install github.com/swaggo/swag/cmd/swag@latest
+
+## Install Migration
+go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
 ## Run Service
 
 ```bash
@@ -64,6 +70,12 @@ $ make generate-jwt-secret
 
 ```bash
 $ make generate-swag
+```
+
+## Test Coverage
+
+```bash
+$ make test-cov
 ```
 
 ## CLI Documentation
