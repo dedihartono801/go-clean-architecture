@@ -59,3 +59,45 @@ func TestFind(t *testing.T) {
 	}
 
 }
+
+func TestCreate(t *testing.T) {
+	repo := repoMock.NewMockAdminRepository()
+	identifier := identifier.NewIdentifier()
+	validator := validator.NewValidator(validatorv10.New())
+	srv := NewAdminService(repo, validator, identifier)
+
+	expected := &CreateDto{
+		Name:     "diding",
+		Email:    "diding@gmail.com",
+		Password: "56334b8232e95fb59b0fc93f2bc0d5c1fdbf5f120d91ac9f5d4c9db14544e007dd163cba5af3de3f027a6d47280f1407c19a5c1b8fc8ca10a4d7ef431341f135",
+	}
+
+	// Define test cases
+	testCases := []struct {
+		name       string
+		input      *CreateDto
+		statusCode int
+		wantErr    bool
+	}{
+		{
+			name:       "Success Create data",
+			input:      expected,
+			statusCode: 201,
+			wantErr:    false,
+		},
+	}
+
+	// Run tests
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Call function
+			rest, statusCode, err := srv.Create(tc.input)
+			//fmt.Println(err.Error())
+			assert.Equal(t, tc.statusCode, statusCode, "Expected status code and actual status code should be equal")
+			assert.Equal(t, tc.wantErr, err != nil, "Expected error and actual error should be equal")
+			assert.Equal(t, expected.Name, rest.Name, "Expected name and actual name should be equal")
+			assert.Equal(t, expected.Email, rest.Email, "Expected email and actual email should be equal")
+		})
+	}
+
+}

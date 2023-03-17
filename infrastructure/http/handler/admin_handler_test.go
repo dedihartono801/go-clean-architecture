@@ -3,9 +3,12 @@ package handler
 import (
 	"testing"
 
+	"bytes"
+	"encoding/json"
 	"github.com/dedihartono801/go-clean-architecture/infrastructure/identifier"
 	repoMock "github.com/dedihartono801/go-clean-architecture/infrastructure/repository/mock"
 	"github.com/dedihartono801/go-clean-architecture/infrastructure/validator"
+	"github.com/dedihartono801/go-clean-architecture/usecase/admin"
 	usecaseMock "github.com/dedihartono801/go-clean-architecture/usecase/admin/mock"
 	validatorv10 "github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -71,4 +74,60 @@ func TestFind(t *testing.T) {
 		})
 	}
 
+}
+
+func TestCreate(t *testing.T) {
+	srv := MockNewService(t)
+
+	// Create a new Fiber app
+	app := fiber.New()
+
+	// Define test cases
+	input := &admin.CreateDto{
+		Name:     "diding",
+		Email:    "diding@gmail.com",
+		Password: "rtdfxc@123",
+	}
+	// Define test cases
+	testCases := []struct {
+		name       string
+		input      *admin.CreateDto
+		statusCode int
+		wantErr    bool
+	}{
+		{
+			name:       "Success Create data",
+			input:      input,
+			statusCode: 201,
+			wantErr:    false,
+		},
+	}
+
+	// Run tests
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Define the getUserByID route
+			reqBodyBytes, _ := json.Marshal(tc.input)
+
+			app.Post("/admin/create", func(c *fiber.Ctx) error {
+				// Set the adminID value in the context's locals map
+				handler := NewAdminHandler(srv)
+				return handler.Create(c)
+			})
+
+			req := httptest.NewRequest(http.MethodPost, "/admin/create", bytes.NewBuffer(reqBodyBytes))
+			req.Header.Set("Content-Type", "application/json")
+
+			resp, err := app.Test(req)
+			if err != nil {
+				t.Fatalf("Error testing Create User: %v", err)
+			}
+
+			defer resp.Body.Close()
+
+			if resp.StatusCode != tc.statusCode {
+				t.Errorf("Expected status code %d but got %d", tc.statusCode, resp.StatusCode)
+			}
+		})
+	}
 }

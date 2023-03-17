@@ -3,12 +3,14 @@ package repository
 import (
 	"testing"
 
+	//"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/dedihartono801/go-clean-architecture/domain"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"time"
 )
 
 func MockDb(t *testing.T) (*gorm.DB, sqlmock.Sqlmock, error) {
@@ -16,7 +18,6 @@ func MockDb(t *testing.T) (*gorm.DB, sqlmock.Sqlmock, error) {
 	if err != nil {
 		t.Fatalf("Error creating mock database: %v", err)
 	}
-
 	// Set up GORM with the mock database
 	gdb, err := gorm.Open(mysql.New(mysql.Config{
 		Conn:                      db,
@@ -81,6 +82,55 @@ func TestFind(t *testing.T) {
 				assert.Equal(t, tc.expected, actual, "Expected and actual data should be equal")
 			}
 
+			assert.Equal(t, tc.wantErr, err != nil, "Expected error and actual error should be equal")
+		})
+	}
+}
+
+func TestCreate(t *testing.T) {
+	// db mock
+	db, mock, err := MockDb(t)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	repo := NewAdminRepository(db)
+
+	// Create a mock admin record
+	now := time.Now()
+	expected := &domain.Admin{
+		ID:        "4d35bf38-8c50-4c85-8072-fd9794803a16",
+		Name:      "diding",
+		Email:     "diding@gmail.com",
+		Password:  "rtfgcv@098",
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	mock.ExpectBegin()
+	// mock the INSERT query
+	mock.ExpectExec("INSERT INTO `admins` (`id`,`name`,`email`,`password`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?)").WithArgs(expected.ID, expected.Name, expected.Email, expected.Password, expected.CreatedAt, expected.UpdatedAt).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
+
+	// Define test cases
+	testCases := []struct {
+		name     string
+		expected *domain.Admin
+		wantErr  bool
+	}{
+		{
+			name:     "Create data",
+			expected: expected,
+			wantErr:  false,
+		},
+	}
+
+	// Run tests
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Call function
+			err := repo.Create(tc.expected)
+			//fmt.Println(err.Error())
 			assert.Equal(t, tc.wantErr, err != nil, "Expected error and actual error should be equal")
 		})
 	}
