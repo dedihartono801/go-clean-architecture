@@ -91,3 +91,6 @@ $ go run cmd/main.go user update -n=teste -e=teste@gmail.com -i=9cc26bf0-1272-45
 
 ## API Documentation
 API Documentation was created with swagger and is available at `http://localhost:5001/docs`
+
+## Fiber Monitoring
+Available at `http://localhost:5001`
