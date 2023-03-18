@@ -1,7 +1,7 @@
 
 ## Description
 
-[Go clean go-clean-architecture]
+[Go clean architecture]
 
 Examples of types of communication;
 - API
