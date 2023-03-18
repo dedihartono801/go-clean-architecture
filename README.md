@@ -14,9 +14,9 @@ Examples of data persistence;
 
 Example:
 - rest api
-- Dockerfile using multi stage build (for deployment prod/staging)
-- DockerfileDev (for local with hot reload)
-- Docker-compose (to run app)
+- Dockerfile with multi stage build (for deployment prod/staging)
+- DockerfileDev (for local environment with hot reload)
+- Docker-compose (for run app)
 - swagger for doc
 - middleware auth jwt
 - migration
