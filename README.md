@@ -1,4 +1,3 @@
-
 ## Description
 
 [Go clean architecture]
@@ -6,15 +5,18 @@
 reference : https://github.com/cmparrela/go-clean-architecture
 
 Examples of types of communication;
+
 - API
 - CLI
 
 Examples of data persistence;
+
 - Mysql
 - Mongo
 - In memory
 
 Example:
+
 - rest api
 - Dockerfile with multi stage build (for deployment prod/staging)
 - DockerfileDev (for local environment with hot reload)
@@ -25,9 +27,11 @@ Example:
 - unit testing with mock and table test
 
 ## Install Swagger
+
 go install github.com/swaggo/swag/cmd/swag@latest
 
 ## Install Migration
+
 go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 ## Run Service
@@ -64,6 +68,7 @@ $ ./entrypoint.sh
 ## Generate JWT Secret
 
 ```bash
+#install openssl on your OS
 $ make generate-jwt-secret
 #copy the secret key and then create new env called JWT_SECRET in .env file:
 ```
@@ -92,7 +97,9 @@ $ go run cmd/main.go user update -n=teste -e=teste@gmail.com -i=9cc26bf0-1272-45
 ```
 
 ## API Documentation
+
 API Documentation was created with swagger and is available at `http://localhost:5001/docs`
 
 ## Fiber Monitoring
+
 Available at `http://localhost:5001`
