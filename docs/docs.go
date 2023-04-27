@@ -301,9 +301,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "film"
+                    "product"
                 ],
-                "summary": "List Film",
+                "summary": "List Product",
                 "responses": {
                     "200": {
                         "description": "OK",

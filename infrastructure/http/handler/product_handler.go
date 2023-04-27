@@ -20,8 +20,8 @@ func NewFilmHandler(service product.Service) ProductHandler {
 }
 
 // Update godoc
-// @Summary      List Film
-// @Tags         film
+// @Summary      List Product
+// @Tags         product
 // @Accept       json
 // @Produce      json
 // @Success      200  {object} product.ProductDto

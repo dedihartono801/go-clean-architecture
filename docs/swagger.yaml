@@ -246,9 +246,9 @@ paths:
             $ref: '#/definitions/product.ProductDto'
       security:
       - ApiKeyAuth: []
-      summary: List Film
+      summary: List Product
       tags:
-      - film
+      - product
   /users:
     get:
       consumes:
