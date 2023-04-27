@@ -68,7 +68,7 @@ $ ./entrypoint.sh
 ## Generate JWT Secret
 
 ```bash
-#install openssl on your OS
+#install openssl on your OS and run command below
 $ make generate-jwt-secret
 #copy the secret key and then create new env called JWT_SECRET in .env file:
 ```
