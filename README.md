@@ -25,6 +25,7 @@ Example:
 - middleware auth jwt
 - migration
 - unit testing with mock and table test
+- concurrency with goroutine, mutex (to prevent race condition), lock row and database transaction (to prevent deadlock), errgroup
 
 ## Install Swagger
 
