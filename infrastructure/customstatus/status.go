@@ -4,7 +4,7 @@ import "net/http"
 
 var (
 	ErrUnprocessableEntity = NewStatus(http.StatusUnprocessableEntity, "Unprocessable entity")
-	ErrNotFound            = NewStatus(http.StatusNotFound, "Not found")
+	ErrNotFound            = NewStatus(http.StatusNotFound, "Data not found")
 	ErrInternalServerError = NewStatus(http.StatusInternalServerError, "Internal Server Error")
 	ErrBadRequest          = NewStatus(http.StatusBadRequest, "Bad Request")
 	ErrEmailNotFound       = NewStatus(http.StatusNotFound, "Email not found")

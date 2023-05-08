@@ -34,6 +34,44 @@ definitions:
     - author
     - title
     type: object
+  domain.Sku:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: integer
+      stock:
+        type: integer
+      updated_at:
+        type: string
+    required:
+    - name
+    - price
+    - stock
+    type: object
+  domain.Transaction:
+    properties:
+      admin_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      total_quantity:
+        type: integer
+      total_transaction:
+        type: integer
+      updated_at:
+        type: string
+    required:
+    - admin_id
+    - total_quantity
+    - total_transaction
+    type: object
   domain.User:
     properties:
       created_at:
@@ -233,6 +271,29 @@ paths:
       summary: Update book
       tags:
       - books
+  /checkout:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body raw
+        in: body
+        name: raw
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Transaction'
+      security:
+      - ApiKeyAuth: []
+      summary: Checkout Items
+      tags:
+      - checkout
   /product:
     get:
       consumes:
@@ -249,6 +310,46 @@ paths:
       summary: List Product
       tags:
       - product
+  /sku:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Sku'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: List sku
+      tags:
+      - skus
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body raw
+        in: body
+        name: raw
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Sku'
+      security:
+      - ApiKeyAuth: []
+      summary: Create sku
+      tags:
+      - skus
   /users:
     get:
       consumes:

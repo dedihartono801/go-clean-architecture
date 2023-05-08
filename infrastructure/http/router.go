@@ -15,6 +15,8 @@ func SetupRoutes(
 	bookHandler handler.BookHandler,
 	adminHandler handler.AdminHandler,
 	productHandler handler.ProductHandler,
+	skuHandler handler.SkuHandler,
+	transactionHandler handler.TransactionHandler,
 
 ) {
 	app.Get("/", monitor.New())
@@ -39,6 +41,12 @@ func SetupRoutes(
 	usersRoute.Post("", userHandler.Create)
 	usersRoute.Delete("/:id", userHandler.Delete)
 
+	skuRoute := app.Group("/sku", middleware.AuthUser)
+	skuRoute.Get("", skuHandler.List)
+	skuRoute.Post("", skuHandler.Create)
+
 	productRoute := app.Group("/product", middleware.AuthUser)
 	productRoute.Get("", productHandler.Product)
+
+	app.Post("/checkout", middleware.AuthUser, transactionHandler.Checkout)
 }

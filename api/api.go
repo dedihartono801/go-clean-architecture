@@ -11,6 +11,8 @@ import (
 	"github.com/dedihartono801/go-clean-architecture/usecase/admin"
 	"github.com/dedihartono801/go-clean-architecture/usecase/book"
 	"github.com/dedihartono801/go-clean-architecture/usecase/product"
+	"github.com/dedihartono801/go-clean-architecture/usecase/sku"
+	"github.com/dedihartono801/go-clean-architecture/usecase/transaction"
 	"github.com/dedihartono801/go-clean-architecture/usecase/user"
 	validatorv10 "github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -21,6 +23,7 @@ func Execute(database *gorm.DB) {
 
 	identifier := identifier.NewIdentifier()
 	validator := validator.NewValidator(validatorv10.New())
+
 	userRepository := repository.NewUserRepository(database)
 	userService := user.NewUserService(userRepository, validator, identifier)
 	userHandler := handler.NewUserHandler(userService)
@@ -36,6 +39,14 @@ func Execute(database *gorm.DB) {
 	productService := product.NewProductService(validator, identifier)
 	productHandler := handler.NewFilmHandler(productService)
 
+	skuRepository := repository.NewSkuRepository(database)
+	skuService := sku.NewSkuService(skuRepository, validator, identifier)
+	skuHandler := handler.NewSkuHandler(skuService)
+
+	transactionRepository := repository.NewTransactionRepository(database)
+	transactionService := transaction.NewTransactionService(transactionRepository, skuRepository, validator, identifier)
+	transactionHandler := handler.NewTransactionHandler(transactionService)
+
 	app := fiber.New()
 
 	http.SetupRoutes(
@@ -44,6 +55,8 @@ func Execute(database *gorm.DB) {
 		bookHandler,
 		adminHandler,
 		productHandler,
+		skuHandler,
+		transactionHandler,
 	)
 
 	if err := app.Listen(":5001"); err != nil {
