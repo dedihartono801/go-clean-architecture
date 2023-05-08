@@ -11,8 +11,6 @@ type SkuRepository interface {
 	List() ([]domain.Sku, error)
 	GetSkuById(tx *gorm.DB, id string) (domain.Sku, error)
 	UpdateStockSku(tx *gorm.DB, sku *domain.Sku) error
-	BeginTransaction() (*gorm.DB, error)
-	CommitTransaction(tx *gorm.DB) error
 }
 
 type skuRepository struct {
@@ -42,22 +40,4 @@ func (r *skuRepository) GetSkuById(tx *gorm.DB, id string) (domain.Sku, error) {
 func (r *skuRepository) UpdateStockSku(tx *gorm.DB, sku *domain.Sku) error {
 
 	return tx.Table("sku").Save(sku).Error
-}
-
-// BeginTransaction starts a new transaction and returns the begin operation
-func (r *skuRepository) BeginTransaction() (*gorm.DB, error) {
-	tx := r.database.Begin()
-	if tx.Error != nil {
-		return nil, tx.Error
-	}
-	return tx, nil
-}
-
-// CommitTransaction commits a transaction and returns the commit operation
-func (r *skuRepository) CommitTransaction(tx *gorm.DB) error {
-	err := tx.Commit().Error
-	if err != nil {
-		return err
-	}
-	return nil
 }

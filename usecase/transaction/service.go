@@ -18,25 +18,28 @@ type Service interface {
 }
 
 type service struct {
-	transactionRepository repository.TransactionRepository
-	skuRepository         repository.SkuRepository
-	validator             validator.Validator
-	identifier            identifier.Identifier
-	skuMutex              sync.Mutex
+	dbTransactionRepository repository.DbTransactionRepository
+	transactionRepository   repository.TransactionRepository
+	skuRepository           repository.SkuRepository
+	validator               validator.Validator
+	identifier              identifier.Identifier
+	skuMutex                sync.Mutex
 }
 
 func NewTransactionService(
+	dbTransactionRepository repository.DbTransactionRepository,
 	transactionRepository repository.TransactionRepository,
 	skuRepository repository.SkuRepository,
 	validator validator.Validator,
 	identifier identifier.Identifier,
 ) Service {
 	return &service{
-		transactionRepository: transactionRepository,
-		skuRepository:         skuRepository,
-		validator:             validator,
-		identifier:            identifier,
-		skuMutex:              sync.Mutex{},
+		dbTransactionRepository: dbTransactionRepository,
+		transactionRepository:   transactionRepository,
+		skuRepository:           skuRepository,
+		validator:               validator,
+		identifier:              identifier,
+		skuMutex:                sync.Mutex{},
 	}
 }
 
@@ -53,7 +56,7 @@ func (s *service) Checkout(input *CheckoutDto, adminID string) (*domain.Transact
 	// create an errgroup.Group instance
 	var g errgroup.Group
 
-	tx, err := s.skuRepository.BeginTransaction()
+	tx, err := s.dbTransactionRepository.BeginTransaction()
 	if err != nil {
 		return nil, customstatus.ErrInternalServerError.Code, errors.New(customstatus.ErrInternalServerError.Message)
 	}
@@ -104,13 +107,13 @@ func (s *service) Checkout(input *CheckoutDto, adminID string) (*domain.Transact
 		TotalTransaction: totalPrice,
 	}
 
-	err = s.transactionRepository.Create(trx)
+	err = s.transactionRepository.Create(tx, trx)
 	if err != nil {
 		tx.Rollback()
 		return nil, customstatus.ErrInternalServerError.Code, errors.New(customstatus.ErrInternalServerError.Message)
 	}
 
-	err = s.skuRepository.CommitTransaction(tx)
+	err = s.dbTransactionRepository.CommitTransaction(tx)
 	if err != nil {
 		tx.Rollback()
 		return nil, customstatus.ErrInternalServerError.Code, errors.New(customstatus.ErrInternalServerError.Message)

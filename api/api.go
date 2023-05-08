@@ -23,6 +23,7 @@ func Execute(database *gorm.DB) {
 
 	identifier := identifier.NewIdentifier()
 	validator := validator.NewValidator(validatorv10.New())
+	dbTransactionRepository := repository.NewDbTransactionRepository(database)
 
 	userRepository := repository.NewUserRepository(database)
 	userService := user.NewUserService(userRepository, validator, identifier)
@@ -44,7 +45,7 @@ func Execute(database *gorm.DB) {
 	skuHandler := handler.NewSkuHandler(skuService)
 
 	transactionRepository := repository.NewTransactionRepository(database)
-	transactionService := transaction.NewTransactionService(transactionRepository, skuRepository, validator, identifier)
+	transactionService := transaction.NewTransactionService(dbTransactionRepository, transactionRepository, skuRepository, validator, identifier)
 	transactionHandler := handler.NewTransactionHandler(transactionService)
 
 	app := fiber.New()
