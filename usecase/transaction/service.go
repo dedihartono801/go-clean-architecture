@@ -4,20 +4,25 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/dedihartono801/go-clean-architecture/domain"
 	"github.com/dedihartono801/go-clean-architecture/infrastructure/customstatus"
 	"github.com/dedihartono801/go-clean-architecture/infrastructure/identifier"
 	"github.com/dedihartono801/go-clean-architecture/infrastructure/repository"
 	"github.com/dedihartono801/go-clean-architecture/infrastructure/validator"
+	"github.com/dedihartono801/go-clean-architecture/infrastructure/worker"
+	"github.com/gofiber/fiber/v2"
+	"github.com/hibiken/asynq"
 	"golang.org/x/sync/errgroup"
 )
 
 type Service interface {
-	Checkout(input *CheckoutDto, adminID string) (*domain.Transaction, int, error)
+	Checkout(ctx *fiber.Ctx, input *CheckoutDto) (*domain.Transaction, int, error)
 }
 
 type service struct {
+	workerTask              worker.TaskDistributor
 	dbTransactionRepository repository.DbTransactionRepository
 	transactionRepository   repository.TransactionRepository
 	skuRepository           repository.SkuRepository
@@ -27,6 +32,7 @@ type service struct {
 }
 
 func NewTransactionService(
+	workerTask worker.TaskDistributor,
 	dbTransactionRepository repository.DbTransactionRepository,
 	transactionRepository repository.TransactionRepository,
 	skuRepository repository.SkuRepository,
@@ -34,6 +40,7 @@ func NewTransactionService(
 	identifier identifier.Identifier,
 ) Service {
 	return &service{
+		workerTask:              workerTask,
 		dbTransactionRepository: dbTransactionRepository,
 		transactionRepository:   transactionRepository,
 		skuRepository:           skuRepository,
@@ -43,7 +50,7 @@ func NewTransactionService(
 	}
 }
 
-func (s *service) Checkout(input *CheckoutDto, adminID string) (*domain.Transaction, int, error) {
+func (s *service) Checkout(ctx *fiber.Ctx, input *CheckoutDto) (*domain.Transaction, int, error) {
 
 	checkout := CheckoutDto{
 		Items: input.Items,
@@ -52,6 +59,9 @@ func (s *service) Checkout(input *CheckoutDto, adminID string) (*domain.Transact
 	if err := s.validator.Validate(checkout); err != nil {
 		return nil, customstatus.ErrBadRequest.Code, err
 	}
+
+	adminID := ctx.Locals("adminID").(string)
+	email := ctx.Locals("email").(string)
 
 	// create an errgroup.Group instance
 	var g errgroup.Group
@@ -111,6 +121,21 @@ func (s *service) Checkout(input *CheckoutDto, adminID string) (*domain.Transact
 	if err != nil {
 		tx.Rollback()
 		return nil, customstatus.ErrInternalServerError.Code, errors.New(customstatus.ErrInternalServerError.Message)
+	}
+
+	taskPayload := &worker.PayloadSendEmail{
+		Email: email,
+	}
+	opts := []asynq.Option{
+		asynq.MaxRetry(10),                //max retry when task failed execute
+		asynq.ProcessIn(time.Second),      //sets the delay before processing a task to 1
+		asynq.Queue(worker.QueueCritical), //it means this task will be prioritized.
+	}
+
+	codeError, err := s.workerTask.DistributeTaskSendEmail(taskPayload, opts...)
+	if err != nil {
+		tx.Rollback()
+		return nil, codeError, errors.New(err.Error())
 	}
 
 	err = s.dbTransactionRepository.CommitTransaction(tx)

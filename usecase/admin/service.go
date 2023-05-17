@@ -81,7 +81,7 @@ func (s *service) Login(input *LoginDto) (*LoginResponse, int, error) {
 		return nil, customstatus.ErrPasswordWrong.Code, errors.New(customstatus.ErrPasswordWrong.Message)
 	}
 	expirationTime := time.Now().Add(time.Hour * time.Duration(24))
-	token, err := middleware.GenerateToken(admin.ID)
+	token, err := middleware.GenerateToken(admin.ID, admin.Email)
 	if err != nil {
 		return nil, customstatus.ErrInternalServerError.Code, errors.New(customstatus.ErrInternalServerError.Message)
 	}

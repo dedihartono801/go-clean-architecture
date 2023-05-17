@@ -12,14 +12,16 @@ import (
 // Define the claims structure for the JWT
 type Claims struct {
 	AdminId string `json:"admin_id"`
+	Email   string `json:"email"`
 	jwt.StandardClaims
 }
 
 // Define a function for generating a new JWT
-func GenerateToken(id string) (string, error) {
+func GenerateToken(id string, email string) (string, error) {
 	expirationTime := time.Now().Add(time.Hour * time.Duration(24))
 	claims := &Claims{
 		AdminId: id,
+		Email:   email,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -72,6 +74,7 @@ func AuthUser(c *fiber.Ctx) error {
 
 	// Set the user ID in the context for future requests
 	c.Locals("adminID", claims.AdminId)
+	c.Locals("email", claims.Email)
 
 	// Call the next middleware in the chain
 	return c.Next()

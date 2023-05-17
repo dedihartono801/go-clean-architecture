@@ -15,6 +15,7 @@ type Config struct {
 	DatabaseName     string `envconfig:"DATABASE_NAME" default:"clean-architecture"`
 	DatabasePort     string `envconfig:"DATABASE_PORT" default:"3306"`
 	MongoAddress     string `envconfig:"MONGO_ADDRESS" default:"mongodb://localhost:27017"`
+	RedisAddress     string `envconfig:"REDIS_ADDRESS" default:"redis:6379"`
 }
 
 func SetupEnvFile() *Config {

@@ -57,7 +57,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     networks:
       - bubble
-  
+
   kafka:
     image: confluentinc/cp-kafka:latest
     hostname: kafka
@@ -86,10 +86,17 @@ services:
     networks:
       - bubble
 
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - "6379:6379"
+
 volumes:
   clean-arch-mysql:
   mongodb_data:
   kafka:
+
 
 networks:
   bubble:

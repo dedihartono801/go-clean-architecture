@@ -34,7 +34,7 @@ func (h *transactionHandler) Checkout(ctx *fiber.Ctx) error {
 		return helper.CustomResponse(ctx, nil, err.Error(), customstatus.ErrBadRequest.Code)
 	}
 
-	transaction, statusCode, err := h.service.Checkout(checkoutDto, ctx.Locals("adminID").(string))
+	transaction, statusCode, err := h.service.Checkout(ctx, checkoutDto)
 	if err != nil {
 		return helper.CustomResponse(ctx, nil, err.Error(), statusCode)
 	}

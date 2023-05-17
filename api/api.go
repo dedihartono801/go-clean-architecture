@@ -8,6 +8,7 @@ import (
 	"github.com/dedihartono801/go-clean-architecture/infrastructure/identifier"
 	"github.com/dedihartono801/go-clean-architecture/infrastructure/repository"
 	"github.com/dedihartono801/go-clean-architecture/infrastructure/validator"
+	"github.com/dedihartono801/go-clean-architecture/infrastructure/worker"
 	"github.com/dedihartono801/go-clean-architecture/usecase/admin"
 	"github.com/dedihartono801/go-clean-architecture/usecase/book"
 	"github.com/dedihartono801/go-clean-architecture/usecase/product"
@@ -19,7 +20,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Execute(database *gorm.DB) {
+func Execute(database *gorm.DB, taskDistributor worker.TaskDistributor) {
 
 	identifier := identifier.NewIdentifier()
 	validator := validator.NewValidator(validatorv10.New())
@@ -45,7 +46,7 @@ func Execute(database *gorm.DB) {
 	skuHandler := handler.NewSkuHandler(skuService)
 
 	transactionRepository := repository.NewTransactionRepository(database)
-	transactionService := transaction.NewTransactionService(dbTransactionRepository, transactionRepository, skuRepository, validator, identifier)
+	transactionService := transaction.NewTransactionService(taskDistributor, dbTransactionRepository, transactionRepository, skuRepository, validator, identifier)
 	transactionHandler := handler.NewTransactionHandler(transactionService)
 
 	app := fiber.New()
