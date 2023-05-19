@@ -2,7 +2,7 @@
 
 [Go clean architecture]
 
-reference : https://github.com/cmparrela/go-clean-architecture
+boilerplate modification from https://github.com/cmparrela/go-clean-architecture
 
 Examples of types of communication;
 
@@ -14,6 +14,7 @@ Examples of data persistence;
 - Mysql
 - Mongo
 - In memory
+- redis
 
 Example:
 
