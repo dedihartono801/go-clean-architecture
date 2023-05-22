@@ -79,7 +79,7 @@ func (s *service) Checkout(ctx *fiber.Ctx, input *CheckoutDto) (*domain.Transact
 			s.skuMutex.Lock()
 			defer s.skuMutex.Unlock()
 
-			// find the selected SKU
+			// find the selected SKU and locking row (select for update)
 			sku, err := s.skuRepository.GetSkuById(tx, item.ID)
 			if err != nil {
 				tx.Rollback()
@@ -123,6 +123,7 @@ func (s *service) Checkout(ctx *fiber.Ctx, input *CheckoutDto) (*domain.Transact
 		return nil, customstatus.ErrInternalServerError.Code, errors.New(customstatus.ErrInternalServerError.Message)
 	}
 
+	//store task to queue
 	taskPayload := &worker.PayloadSendEmail{
 		Email: email,
 	}
