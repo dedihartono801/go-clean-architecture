@@ -19,14 +19,14 @@ Examples of data persistence;
 Example:
 
 - rest api
-- Dockerfile with multi stage build (for deployment prod/staging)
-- DockerfileDev (for local environment with hot reload)
-- Docker-compose (for run app)
+- Dockerfile with multi stage build (for prod/staging)
+- DockerfileDev (for local environment)
+- Docker-compose
 - swagger for doc
 - middleware auth jwt
 - migration
 - unit testing with mock and table test
-- concurrency with goroutine, mutex (to avoid race condition), lock row and database transaction (to avoid race condition), errgroup
+- concurrency with goroutines by implementing mutex and locking rows to avoid race conditions (on checkout api)
 - worker queue using asynq library
 
 ## Install Swagger
